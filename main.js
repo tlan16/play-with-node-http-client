@@ -1,25 +1,17 @@
-var http = require('http')
-var moment = require('moment')
+const ListGetter = require('./listGetters/get')
+const BatchDownloader = require('./batchDownloader')
 
-start = moment.now()
+const baseUrl = 'https://wenbo.tv/Practice-V3'
 
-let agent = new http.Agent({
-    maxSockets: 4,
+ListGetter.DI(list => {
+    let urls = []
+    for (di of list) {
+        urls.push(
+            baseUrl + '/' + di.imgUrl,
+            baseUrl + '/' + di.voiceUrl,
+        )
+    }
+
+    console.log(urls)
+    BatchDownloader.download(urls)
 })
-
-let options = {
-    hostname: 'www.google.co.uk',
-    port: 80,
-    path: '/',
-    method: 'GET',
-    agent: agent,
-}
-
-for (let i = 0; i < 25; i++) {
-    http.get(options, function (res) {
-        res.on('data', function (chunk) {
-        })
-    }).on('socket', function (e) {
-        console.log("Socket to Google", moment.now() - start);
-    })
-}
